@@ -7,8 +7,14 @@ const urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
+//in the localhost:8080 web shows Hello!
 app.get("/", (req, res) => {
   res.send("Hello!");
+});
+
+//in the http://localhost:8080/urls.json shows the URL
+app.get("/urls.json", (req, res) => {
+  res.json(urlDatabase);
 });
 
 app.listen(PORT, () => {
