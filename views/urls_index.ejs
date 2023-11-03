@@ -1,0 +1,6 @@
+<ul>
+  <% for (let shortURL in urlDatabase) { %>
+    <li><a href="<%= urlDatabase[shortURL] %>"><%= shortURL %></a></li>
+  <% } %>
+</ul>
+
