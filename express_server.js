@@ -65,8 +65,6 @@ app.post("/urls/:id/delete", (req, res) => {
   if (urlDatabase[id]) {
     delete urlDatabase[id];
     res.redirect("/urls"); // Redirect the client back to the "/urls" page
-  } else {
-    res.status(404).send("URL not found"); // Handle case when the URL does not exist
   }
 });
 
