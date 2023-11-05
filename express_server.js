@@ -136,11 +136,27 @@ app.get("/register", (req, res) => {
 });
 
 // POST Registration route
+// Helper function to get a user by email
+const getUserByEmail = (email) => {
+  for (const userId in users) {
+    if (users[userId].email === email) {
+      return users[userId];
+    }
+  }
+  return null;
+};
+
 app.post("/register", (req, res) => {
   const { email, password } = req.body;
 
+  // Check if email and password are empty
   if (!email || !password) {
     return res.status(400).send("Email and password are required");
+  }
+
+  // Check if the email already exists
+  if (getUserByEmail(email)) {
+    return res.status(400).send("Email already exists");
   }
 
   const userId = generateRandomString();
@@ -159,6 +175,10 @@ app.post("/register", (req, res) => {
 
 app.get("/register", (req, res) => {
   res.render("registration");
+});
+
+app.get("/login", (req, res) => {
+  res.render("logIn_template")
 });
 
 app.listen(PORT, () => {
