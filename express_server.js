@@ -1,13 +1,14 @@
 const express = require("express");
 const app = express();
-const PORT = 8080; // default port 8080
+const PORT = 8080; // Default port 8080
 const cookieParser = require('cookie-parser');
 
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 
 function generateRandomString() {
-  
+  // Your implementation of generateRandomString
+  // ...
 }
 
 app.set("view engine", "ejs");
@@ -30,76 +31,97 @@ const users = {
   },
 };
 
-// Routes
+// Root route
 app.get("/", (req, res) => {
   res.send("Hello!");
 });
 
+// Display JSON data for URL database
 app.get("/urls.json", (req, res) => {
   res.json(urlDatabase);
 });
 
+// Sample route with HTML response
 app.get("/hello", (req, res) => {
   res.send("<html><body>Hello <b>World</b></body></html>\n");
 });
 
+// Sample route to display a variable value
 app.get("/set", (req, res) => {
   const a = 1;
   res.send(`a = ${a}`);
 });
 
+// URL List route
 app.get("/urls", (req, res) => {
+  const userId = req.cookies["userId"]; 
+  const user = users[userId];
+
   const templateVars = {
-    username: req.cookies["username"],
+    user: user,
     urls: urlDatabase,
     // ... any other vars
   };
   res.render("urls_index", templateVars);
 });
 
+// New URL route
 app.get("/urls/new", (req, res) => {
+  const userId = req.cookies["userId"]; // Retrieve the user's ID from the cookie
+  const user = users[userId];
+
   const templateVars = {
-    username: req.cookies["username"],
+    user: user,
     // ... any other vars
   };
   res.render("urls_new", templateVars);
 });
 
+// Show specific URL
 app.get("/urls/:id", (req, res) => {
   const id = req.params.id;
-  const longURL = urlDatabase[id]; 
+  const longURL = urlDatabase[id];
 
   const templateVars = { id: id, longURL: longURL };
   res.render("urls_show", templateVars);
 });
 
+// Redirect route
 app.get("/u/:id", (req, res) => {
   const id = req.params.id;
-  const longURL = urlDatabase[id]; 
+  const longURL = urlDatabase[id];
   res.redirect(longURL);
 });
 
+// Sample POST route (log request body)
 app.post("/urls", (req, res) => {
   console.log(req.body);
-  res.send("Ok"); 
+  res.send("Ok");
 });
 
+// Login route
 app.post("/login", (req, res) => {
-  const username = req.body.username; 
-  res.cookie('username', username); 
-  res.redirect("/urls");
+  const userEmail = req.body.user;
+
+  // Find the user by their email in your users object
+  for (const userId in users) {
+    if (users[userId].email === userEmail) {
+      const userId = users[userId].id;
+      res.cookie('userId', userId);
+      res.redirect("/urls");
+      return;
+    }
+  }
+  res.status(401).send("Authentication failed"); 
 });
 
-app.get("/logout", (req, res) => {
-  res.clearCookie('username');
-  res.redirect("/urls");
-});
-
+// POST Logout route
 app.post("/logout", (req, res) => {
-  res.clearCookie('username');
-  res.redirect("/urls"); 
+  res.clearCookie('userId'); 
+  res.redirect("/urls");
 });
 
+// Delete URL route
 app.post("/urls/:id/delete", (req, res) => {
   const id = req.params.id;
   if (urlDatabase[id]) {
@@ -108,10 +130,30 @@ app.post("/urls/:id/delete", (req, res) => {
   }
 });
 
-app.post("/urls/:id", (req, res) => {
-  const id = req.params.id;
-  const newLongURL = req.body.longURL;
-  urlDatabase[id] = newLongURL;
+// Registration form route
+app.get("/register", (req, res) => {
+  res.render("registration");
+});
+
+// POST Registration route
+app.post("/register", (req, res) => {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    return res.status(400).send("Email and password are required");
+  }
+
+  const userId = generateRandomString();
+
+  const newUser = {
+    id: userId,
+    email: email,
+    password: password,
+  };
+
+  users[userId] = newUser;
+
+  res.cookie("userId", userId); 
   res.redirect("/urls");
 });
 
