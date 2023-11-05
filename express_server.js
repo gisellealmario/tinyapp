@@ -1,6 +1,8 @@
 const express = require("express");
 const app = express();
 const PORT = 8080; // default port 8080
+const cookieParser = require('cookie-parser');
+app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 
 function generateRandomString() {}
@@ -29,7 +31,6 @@ app.get("/", (req, res) => {
   res.send("Hello!");
 });
 
-
 //in the http://localhost:8080/urls.json shows the URL
 app.get("/urls.json", (req, res) => {
   res.json(urlDatabase);
@@ -55,6 +56,13 @@ app.post("/urls", (req, res) => {
   res.send("Ok"); // Respond with 'Ok' (we will replace this)
 });
 
+
+app.post("/login", (req, res) => {
+  const username = req.body.username; // Get the username from the request body
+  res.cookie('username', username); // Set the username in a cookie
+  res.redirect("/urls"); // Redirect back to the /urls page
+});
+
 app.get("/u/:id", (req, res) => {
   const id = req.params.id;
   const longURL = urlDatabase[id]; // Retrieve the long URL from urlDatabase
@@ -64,7 +72,7 @@ app.post("/urls/:id/delete", (req, res) => {
   const id = req.params.id;
   if (urlDatabase[id]) {
     delete urlDatabase[id];
-    res.redirect("/urls"); // Redirect the client back to the "/urls" page
+    res.redirect("/urls"); 
   }
 });
 app.post("/urls/:id", (req, res) => {
@@ -73,7 +81,7 @@ app.post("/urls/:id", (req, res) => {
   urlDatabase[id] = newLongURL;
   res.redirect("/urls");
 });
-  
+
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
