@@ -174,11 +174,23 @@ app.post("/register", (req, res) => {
 });
 
 app.get("/register", (req, res) => {
-  res.render("registration");
+  const userId = req.cookies.userId;
+  const user = users[userId];
+
+  res.render("registration", user); 
 });
 
+
 app.get("/login", (req, res) => {
-  res.render("logIn_template")
+  const userId = req.cookies["userId"]; 
+  const user = users[userId];
+
+  const templateVars = {
+    user: user,
+    urls: urlDatabase,
+    // ... any other vars
+  };
+  res.render("logIn_template", templateVars)
 });
 
 app.listen(PORT, () => {

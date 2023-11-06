@@ -15,16 +15,19 @@
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
       <div class="navbar-nav">
         <a class="nav-item nav-link" href="/urls">My URLs</a>
-        <a class="nav-item nav-link" href="/urls/new">Create New URL</a>
-        <% if (user) { %>
-          <form method="POST" action="/logout">
-            <button type="submit" class="btn btn-light">Log Out</button>
-          </form>
-        <% } else { %>
-          <a class="nav-item nav-link" href="/register">Register</a>
-          <a class="nav-item nav-link" href="/login">Log In</a>
-        <% } %>       
+        <a class="nav-item nav-link" href="/urls/new">Create New URL</a>    
       </div>
     </div>
+    <% if (userId) { %>
+      <span>Logged in as: <%= user.email %>!</span>
+      <form method="POST" action="/logout">
+        <button type="submit" class="btn btn-light">Log Out</button>
+      </form>
+    <% } else { %>
+      <div class="navbar-nav"> 
+        <a class="nav-item nav-link" href="/register">Register</a>
+        <a class="nav-item nav-link" href="/login">Login</a>
+      </div>
+    <% } %>   
   </nav>
 </header>
