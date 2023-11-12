@@ -19,8 +19,14 @@ const generateRandomString = function() {
 };
 
 const urlDatabase = {
-  "b2xVn2": "http://www.lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com"
+  b6UTxQ: {
+    longURL: "https://www.tsn.ca",
+    userID: "aJ48lW",
+  },
+  i3BoGr: {
+    longURL: "https://www.google.ca",
+    userID: "aJ48lW",
+  },
 };
 
 const users = {
@@ -203,14 +209,14 @@ app.post("/login", (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
   if (email === '' || password === '') {
-    res.status(403).send("Cannot leave fields empty");
+    res.status(403).send("Please fill out the fields");
   } else {
     let user = getUserByEmail(email, users);
     if (!user) {
       res.status(403).send("User not found");
     } else {
       if (!bcrypt.compareSync(password, user.password)) {
-        res.status(403).send("Passwords is not valid");
+        res.status(403).send("Email or Password not valid");
       } else {
         req.session.user_id = user.id;
         res.redirect("/urls");
