@@ -64,6 +64,10 @@ const urlsForUser = function(id, database) {
 
 app.use(express.urlencoded({ extended: true }));
 
+app.get("/", (req, res) => {
+  res.redirect("/login");
+});
+
 app.post("/urls", (req, res) => {
   const userId = req.session.user_id;
   if (!userId) {
@@ -79,6 +83,7 @@ app.post("/urls", (req, res) => {
   };
   res.redirect(`urls/`);
 });
+
 
 app.get("/urls", (req, res) => {
   if (req.session.user_id) {
