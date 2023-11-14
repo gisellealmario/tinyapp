@@ -131,14 +131,15 @@ app.get("/urls/:id", (req, res) => {
 });
 
 app.get("/u/:id", (req, res) => {
-  const longURL = urlDatabase[req.params.id].longURL;
   const shortURL = req.params.id;
-  if (!urlDatabase[shortURL].longURL) {
+  if (!urlDatabase[shortURL] || !urlDatabase[shortURL].longURL) {
     res.status(400).send("Shortened ID does not exist");
     return;
   }
+  const longURL = urlDatabase[shortURL].longURL;
   res.redirect(longURL);
 });
+
 
 app.post("/urls/:id/delete", (req, res) => {
   const userId = req.session.user_id;
